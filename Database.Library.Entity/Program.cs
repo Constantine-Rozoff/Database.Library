@@ -68,7 +68,7 @@ public class PublishCodeType
 
 internal class Program
 {
-    private static string connectionString = "Server=localhost;Database=master;Trusted_Connection=True";
+    static string connectionString = "Server=localhost;Database=master;Trusted_Connection=True";
     
     public static void Main(string[] args)
     {
