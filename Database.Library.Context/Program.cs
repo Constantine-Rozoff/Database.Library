@@ -2,6 +2,7 @@
 
 
 using System.Data;
+using Database.Library.Entity;
 using Microsoft.Data.SqlClient;
 
 internal class Program
@@ -10,7 +11,9 @@ internal class Program
     
     public static void Main(string[] args)
     {
-        AddLibrarian("login", "password", "email");
+        //using var context = new MasterContext();
+
+        //AddLibrarian("login", "password", "email");
         //GetLibrarians();
     }
     

@@ -1,74 +1,11 @@
-﻿// See https://aka.ms/new-console-template for more information
-
-using System.Reflection.Metadata;
+﻿using Database.Library.Entity;
+using Microsoft.Data.SqlClient;
+using System.Data;
 using Microsoft.EntityFrameworkCore;
-
-public class Librarian
-{
-    public string Login { get; set; }
-    
-    public string Password { get; set; }
-    
-    public string Email { get; set; }
-}
-
-public class Reader
-{
-    public string Login { get; set; }
-    
-    public string Password { get; set; }
-    
-    public string Email { get; set; }
-    
-    public string Name { get; set; }
-    
-    public string LastName { get; set; }
-    
-    public virtual ICollection<DocumentType> Documents { get; set; }
-    
-    public string DocumentNumber { get; set; }
-}
-
-public class Book
-{
-    public string Name { get; set; }
-
-    public virtual ICollection<Author> Authors { get; set; }
-    
-    public int PublishCode { get; set; }
-    public ICollection<PublishCodeType> PublishCodeTypes { get; set; }
-
-    public int Year { get; set; }
-
-    public string PublishCountry { get; set; }
-
-    public string PublishCity { get; set; }
-}
-
-public class Author
-{
-    public string Name { get; set; }
-    
-    public string LastName { get; set; }
-    
-    public string SecondName { get; set; }
-    
-    public DateTime DateOfBirth { get; set; }
-}
-
-public class DocumentType
-{
-    public string Type { get; set; }
-}
-
-public class PublishCodeType
-{
-    public string Type { get; set; }
-}
 
 internal class Program
 {
-    static string connectionString = "Server=localhost;Database=master;Trusted_Connection=True";
+    static string connectionString = "Server=localhost;Database=Library;Trusted_Connection=True;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
     
     public static void Main(string[] args)
     {
@@ -76,42 +13,65 @@ internal class Program
         {
             Login = "lib1",
             Password = "123",
-            Email = "lib@gmail.com"
+            Email = "lib@gmail.com",
+            Reader = new Reader()
         };
 
         using var context = new LibraryContext();
         
+        context.Database.EnsureCreated();
+        
+        AddLibrarian("lib1", "123", "lib@gmail.com", 1);
+        
         context.Dispose();
     }
-}
-
-public class LibraryContext : DbContext
+    
+    static void AddLibrarian(string login, string password, string email, int readerId)
     {
-        public DbSet<Librarian> Librarians { get; set; }
-
-        public DbSet<Reader> Readers { get; set; }
-
-        public DbSet<Book> Books { get; set; }
-        
-        public DbSet<Author> Authors { get; set; }
-
-        public DbSet<DocumentType> DocumentTypes { get; set; }
-        
-        public DbSet<PublishCodeType> PublishCodeTypes { get; set; }
-
-        public LibraryContext()
+        using (SqlConnection conn = new SqlConnection(connectionString))
         {
-        }
+            conn.Open();
+            string query = $"INSERT INTO Librarian (Login, Password, Email, ReaderId) VALUES (@login, @password, @email, @readerId)";
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                cmd.Parameters.AddWithValue("@login", login);
+                cmd.Parameters.AddWithValue("@password", password);
+                cmd.Parameters.AddWithValue("@email", email);
+                cmd.Parameters.AddWithValue("@readerId", readerId);
 
-        protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        {
-            optionsBuilder
-
-                .UseSqlServer("Server=localhost;Database=master;Trusted_Connection=True")
-
-                .LogTo(Console.WriteLine);
-
-
-            base.OnConfiguring(optionsBuilder);
+                int rowsAffected = cmd.ExecuteNonQuery();
+                Console.WriteLine($"Rows Inserted: {rowsAffected}");
+            }
         }
     }
+    
+    static void GetLibrarians()
+    {
+        List<Librarian> librarians = new List<Librarian>();
+    
+        librarians.ToList();
+    
+        using (SqlConnection conn = new SqlConnection(connectionString))
+        {
+            conn.Open();
+            string query = "SELECT Login, Password, Email FROM Librarian ";
+            using (SqlCommand cmd = new SqlCommand(query, conn))
+            {
+                using (SqlDataReader reader = cmd.ExecuteReader())
+                {
+                    while (reader.Read())
+                    {
+                        Console.WriteLine($"Login: {reader["Login"]}, Password: {reader["Password"]}, Email: {reader["Email"]}");
+    
+                        librarians.Add(new Librarian
+                        {
+                            Login = reader.GetString("login"),
+                            Password = reader.GetString("password"),
+                            Email = reader.GetString("email"),
+                        });
+                    }
+                }
+            }
+        }
+    }
+}
