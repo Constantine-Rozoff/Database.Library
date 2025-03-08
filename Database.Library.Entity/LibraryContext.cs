@@ -26,6 +26,8 @@ namespace Database.Library.Entity
         public virtual DbSet<BookAuthor> BookAuthors { get; set; }
     
         public virtual DbSet<PublishingCodeType> PublishingCodeTypes { get; set; }
+        
+        public virtual DbSet<ВоокBorrower> ВоокBorrowers { get; set; }
 
     
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)

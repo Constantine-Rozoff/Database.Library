@@ -4,6 +4,7 @@ using Database.Library.Entity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 #nullable disable
@@ -11,9 +12,11 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Database.Library.Entity.Migrations
 {
     [DbContext(typeof(LibraryContext))]
-    partial class LibraryContextModelSnapshot : ModelSnapshot
+    [Migration("20250308135731_MakeReaderIdNullable")]
+    partial class MakeReaderIdNullable
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -208,38 +211,6 @@ namespace Database.Library.Entity.Migrations
                     b.ToTable("Readers");
                 });
 
-            modelBuilder.Entity("Database.Library.Entity.ВоокBorrower", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd()
-                        .HasColumnType("int");
-
-                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
-
-                    b.Property<int>("BookId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime>("LoanDate")
-                        .HasColumnType("datetime2");
-
-                    b.Property<int>("LoanPeriod")
-                        .HasColumnType("int");
-
-                    b.Property<int>("ReaderId")
-                        .HasColumnType("int");
-
-                    b.Property<DateTime?>("ReturnDate")
-                        .HasColumnType("datetime2");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BookId");
-
-                    b.HasIndex("ReaderId");
-
-                    b.ToTable("ВоокBorrowers");
-                });
-
             modelBuilder.Entity("Database.Library.Entity.Book", b =>
                 {
                     b.HasOne("Database.Library.Entity.PublishingCodeType", "PublishingCodeType")
@@ -288,25 +259,6 @@ namespace Database.Library.Entity.Migrations
                         .IsRequired();
 
                     b.Navigation("DocumentType");
-                });
-
-            modelBuilder.Entity("Database.Library.Entity.ВоокBorrower", b =>
-                {
-                    b.HasOne("Database.Library.Entity.Book", "Book")
-                        .WithMany()
-                        .HasForeignKey("BookId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.HasOne("Database.Library.Entity.Reader", "Reader")
-                        .WithMany()
-                        .HasForeignKey("ReaderId")
-                        .OnDelete(DeleteBehavior.Cascade)
-                        .IsRequired();
-
-                    b.Navigation("Book");
-
-                    b.Navigation("Reader");
                 });
 
             modelBuilder.Entity("Database.Library.Entity.Author", b =>

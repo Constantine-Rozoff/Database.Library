@@ -1,7 +1,6 @@
 ﻿using Database.Library.Entity;
 using Microsoft.Data.SqlClient;
-using System.Data;
-using Microsoft.EntityFrameworkCore;
+using Database.Library.Entity.Services;
 
 internal class Program
 {
@@ -9,69 +8,33 @@ internal class Program
     
     public static void Main(string[] args)
     {
-        var librarian = new Librarian()
-        {
-            Login = "lib1",
-            Password = "123",
-            Email = "lib@gmail.com",
-            Reader = new Reader()
-        };
-
         using var context = new LibraryContext();
         
         context.Database.EnsureCreated();
         
-        AddLibrarian("lib1", "123", "lib@gmail.com", 1);
+        LibrarianService libService = new LibrarianService();
+        
+        ReaderService readService = new ReaderService();
+        
+        //libService.AddLibrarian("lib1", "123", "lib@gmail.com", 8);
+        
+        //AddReader("Login", "Password5",	"Email@gmail.com", "FirstName", "LastName",	1, "1234567778");
+        
+        //GetReaders();
+        
+        // readService.GetBooks();
+        
+        // readService.GetAuthors();
+        
+        //TODO: Figure how to put a book here
+        readService.BorrowBook(5, 2);
+        
+        //libService.AddBook("The Great Gatsby 2",	1,	"NY002",	1925,	"USA",	"New York");
+
+        context.SaveChanges();
+
+        //libService.GetLibrarians();
         
         context.Dispose();
-    }
-    
-    static void AddLibrarian(string login, string password, string email, int readerId)
-    {
-        using (SqlConnection conn = new SqlConnection(connectionString))
-        {
-            conn.Open();
-            string query = $"INSERT INTO Librarian (Login, Password, Email, ReaderId) VALUES (@login, @password, @email, @readerId)";
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            {
-                cmd.Parameters.AddWithValue("@login", login);
-                cmd.Parameters.AddWithValue("@password", password);
-                cmd.Parameters.AddWithValue("@email", email);
-                cmd.Parameters.AddWithValue("@readerId", readerId);
-
-                int rowsAffected = cmd.ExecuteNonQuery();
-                Console.WriteLine($"Rows Inserted: {rowsAffected}");
-            }
-        }
-    }
-    
-    static void GetLibrarians()
-    {
-        List<Librarian> librarians = new List<Librarian>();
-    
-        librarians.ToList();
-    
-        using (SqlConnection conn = new SqlConnection(connectionString))
-        {
-            conn.Open();
-            string query = "SELECT Login, Password, Email FROM Librarian ";
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            {
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        Console.WriteLine($"Login: {reader["Login"]}, Password: {reader["Password"]}, Email: {reader["Email"]}");
-    
-                        librarians.Add(new Librarian
-                        {
-                            Login = reader.GetString("login"),
-                            Password = reader.GetString("password"),
-                            Email = reader.GetString("email"),
-                        });
-                    }
-                }
-            }
-        }
     }
 }
