@@ -1,4 +1,6 @@
-﻿namespace Database.Library.Entity;
+﻿using Database.Library.Entity;
+
+namespace ContextAndModels;
 
 public class Book
 {
