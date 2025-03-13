@@ -1,10 +1,144 @@
+using ContextAndModels;
 using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.Infrastructure;
 
 namespace Database.Library.Entity.Services;
 
 public class LibrarianService : ReaderService
 {
-    static string connectionString = "Server=localhost;Database=Library;Trusted_Connection=True;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+    private static string connectionString = "Server=localhost;Database=Library;Trusted_Connection=True;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+
+    public LibrarianService(LibraryContext context) : base(context)
+    {
+        
+    }
+
+    public void AddLibrarian(Librarian librarian, DbContext context)
+    {
+        using (context)
+        {
+            context.Add(librarian);
+            context.SaveChanges();
+        }
+    }
+
+    public void AddReader(Reader reader, DbContext context)
+    {
+        using (context)
+        {
+            context.Add(reader);
+            context.SaveChanges();
+        }
+    }
+    public void AddBook(Book book, DbContext context)
+    {
+        using (context)
+        {
+            context.Add(book);
+            context.SaveChanges();
+        }
+    }
+    
+    public void AddAuthor(Author author, DbContext context)
+    {
+        using (context)
+        {
+            context.Add(author);
+            context.SaveChanges();
+        }
+    }
+    
+    public void UpdateReader(int readerId, Reader updatedReader, DbContext context)
+    {
+        using (context)
+        {
+            var reader = context.Set<Reader>()
+                .Include(r => r.DocumentType) 
+                .FirstOrDefault(r => r.Id == readerId);
+
+            if (reader != null)
+            {
+                reader.Login = updatedReader.Login;
+                reader.Password = updatedReader.Password;
+                reader.Email = updatedReader.Email;
+                reader.FirstName = updatedReader.FirstName;
+                reader.LastName = updatedReader.LastName;
+                reader.DocumentTypeId = updatedReader.DocumentTypeId;
+                reader.DocumentNumber = updatedReader.DocumentNumber;
+
+                if (updatedReader.DocumentType != null)
+                {
+                    reader.DocumentType = updatedReader.DocumentType;
+                }
+
+                context.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("Reader not found");
+            }
+        }
+    }
+    
+    public void UpdateBook(int bookId, Book bookForUpdate, DbContext context)
+    {
+        using (context)
+        {
+            var book = context.Set<Book>()
+                .Include(b => b.BookAuthors)  
+                .ThenInclude(ba => ba.Author) 
+                .FirstOrDefault(b => b.Id == bookId);
+
+            if (book != null)
+            {
+                book.Title = bookForUpdate.Title;
+                book.PublishingCodeTypeId = bookForUpdate.PublishingCodeTypeId;
+                book.PublishingCode = bookForUpdate.PublishingCode;
+                book.Year = bookForUpdate.Year;
+                book.PublishingCountry = bookForUpdate.PublishingCountry;
+                book.PublishingCity = bookForUpdate.PublishingCity;
+
+                if (bookForUpdate.BookAuthors != null && bookForUpdate.BookAuthors.Any())
+                {
+                    book.BookAuthors.Clear();
+                    foreach (var bookAuthor in bookForUpdate.BookAuthors)
+                    {
+                        book.BookAuthors.Add(bookAuthor);
+                    }
+                }
+
+                context.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("Book is not found");
+            }
+        }
+    }
+    
+    public void UpdateAuthor(int authorId, Author authorUpdate, DbContext context)
+    {
+        using (context)
+        {
+            var author = context.Set<Author>()
+                .FirstOrDefault(b => b.Id == authorId);
+
+            if (author != null)
+            {
+                author.FirstName = authorUpdate.FirstName;
+                author.LastName = authorUpdate.LastName;
+                author.MiddleName = authorUpdate.MiddleName;
+                author.DateOfBirth = authorUpdate.DateOfBirth;
+
+                context.SaveChanges();
+            }
+            else
+            {
+                Console.WriteLine("Book is not found");
+            }
+        }
+    }
     
     public void AddLibrarian(string login, string password, string email, int readerId)
     {

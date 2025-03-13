@@ -1,10 +1,18 @@
+using ContextAndModels;
 using Microsoft.Data.SqlClient;
 
 namespace Database.Library.Entity.Services;
 
 public class ReaderService
 {
+    private LibraryContext _context { get; set; }
+    
     static string connectionString = "Server=localhost;Database=Library;Trusted_Connection=True;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+    
+    public ReaderService(LibraryContext context)
+    {
+        _context = context;
+    }
     
     public void BorrowBook(int readerId, int bookId)
     {
@@ -31,42 +39,33 @@ public class ReaderService
         
     }
     
-    public void GetBooks()
+    public void GetBooksAuthors(IQueryable<BookAuthor> books)
     {
-        List<Book> books = new List<Book>();
-    
-        using (SqlConnection conn = new SqlConnection(connectionString))
+        int index = 0;
+        foreach (var book in books)
         {
-            conn.Open();
+            string authors = string.Join(", ", $"{book.FirstName} {book.MiddleName} {book.LastName}");
+            Console.WriteLine($"{++index} - {book.Title} - {authors}");
+        }
+    }
 
-            string query = @"
-                SELECT 
-                    b.Title AS BookTitle,
-                    a.FirstName,
-                    a.LastName,
-                    a.MiddleName
-                FROM 
-                    [Library].[dbo].[Books] b
-                JOIN 
-                    [Library].[dbo].[Authors] a ON a.Id = b.Id";
-
-            using (SqlCommand cmd = new SqlCommand(query, conn))
-            {
-                using (SqlDataReader reader = cmd.ExecuteReader())
-                {
-                    while (reader.Read())
-                    {
-                        string bookTitle = reader.GetString(reader.GetOrdinal("BookTitle"));
-                        string firstName = reader.GetString(reader.GetOrdinal("FirstName"));
-                        string lastName = reader.GetString(reader.GetOrdinal("LastName"));
-                        string middleName = reader.IsDBNull(reader.GetOrdinal("MiddleName")) ? null : reader.GetString(reader.GetOrdinal("MiddleName"));
-
-                        Console.WriteLine($"Title: {bookTitle}");
-                        Console.WriteLine($"Name: {firstName} {middleName} {lastName}");
-                        Console.WriteLine(new string('-', 50));
-                    }
-                }
-            }
+    public void GetBooks(IQueryable<Book> bookList)
+    {
+        int index = 0;
+        foreach (var book in bookList)
+        {
+            string list = string.Join(", ", $"{book.Title} - {book.Year} - {book.PublishingCountry} - {book.PublishingCity}");
+            Console.WriteLine($"{++index} - {list}");
+        }
+    }
+    
+    public void GetAuthors(IQueryable<Author> authors)
+    {
+        int index = 0;
+        foreach (var author in authors)
+        {
+            string list = string.Join(", ", $"{author.FirstName} - {author.MiddleName} - {author.LastName} - {author.DateOfBirth}");
+            Console.WriteLine($"{++index} - {list}");
         }
     }
 
