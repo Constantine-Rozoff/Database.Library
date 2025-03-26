@@ -4,6 +4,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Database.Library.Entity", "
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ContextAndModels", "ContextAndModels\ContextAndModels.csproj", "{A2255828-F5D1-4FDC-A480-9C0DDDC2A34D}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryAPI", "LibraryAPI\LibraryAPI.csproj", "{075085E4-C8A5-4290-9B8B-3D15911B12FE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -18,5 +20,9 @@ Global
 		{A2255828-F5D1-4FDC-A480-9C0DDDC2A34D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A2255828-F5D1-4FDC-A480-9C0DDDC2A34D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A2255828-F5D1-4FDC-A480-9C0DDDC2A34D}.Release|Any CPU.Build.0 = Release|Any CPU
+		{075085E4-C8A5-4290-9B8B-3D15911B12FE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{075085E4-C8A5-4290-9B8B-3D15911B12FE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{075085E4-C8A5-4290-9B8B-3D15911B12FE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{075085E4-C8A5-4290-9B8B-3D15911B12FE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

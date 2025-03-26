@@ -1,4 +1,5 @@
 using ContextAndModels;
+using ContextAndModels.Models;
 using Microsoft.Data.SqlClient;
 
 namespace Database.Library.Entity.Services;

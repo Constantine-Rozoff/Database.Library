@@ -1,4 +1,5 @@
 using ContextAndModels;
+using ContextAndModels.Models;
 using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
@@ -7,7 +8,7 @@ namespace Database.Library.Entity.Services;
 
 public class LibrarianService : ReaderService
 {
-    private static string connectionString = "Server=localhost;Database=Library;Trusted_Connection=True;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
+    public static string connectionString = "Server=localhost;Database=Library;Trusted_Connection=True;Integrated Security=True;Encrypt=True;Trust Server Certificate=True";
 
     public LibrarianService(LibraryContext context) : base(context)
     {
@@ -86,7 +87,7 @@ public class LibrarianService : ReaderService
         using (context)
         {
             var book = context.Set<Book>()
-                .Include(b => b.BookAuthors)  
+                .Include(b => b.BookAuthors)!  
                 .ThenInclude(ba => ba.Author) 
                 .FirstOrDefault(b => b.Id == bookId);
 

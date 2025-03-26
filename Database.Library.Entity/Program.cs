@@ -19,9 +19,9 @@ internal class Program
         
         //AddReader("Login", "Password5",	"Email@gmail.com", "FirstName", "LastName",	1, "1234567778");
         
-        //GetReaders();
+        readService.GetAuthors();
         
-        // readService.GetBooks();
+        //readService.GetBooks();
         
         // readService.GetAuthors();
         
