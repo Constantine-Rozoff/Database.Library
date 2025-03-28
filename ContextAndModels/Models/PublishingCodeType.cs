@@ -1,4 +1,4 @@
-namespace Database.Library.Entity;
+namespace ContextAndModels.Models;
 
 public class PublishingCodeType
 {

@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using ContextAndModels.Models;
+using Microsoft.EntityFrameworkCore;
 
 namespace Database.Library.Entity
 {
@@ -14,21 +15,18 @@ namespace Database.Library.Entity
         }
 
         public virtual DbSet<Librarian> Librarians { get; set; }
-    
         public virtual DbSet<Reader> Readers { get; set; }
+        public DbSet<Employee> Employees { get; set; }
     
         public virtual DbSet<DocumentType> DocumentTypes { get; set; }
-    
         public virtual DbSet<Book> Books { get; set; }
-    
+        public virtual DbSet<BorrowedBook> BorrowedBooks { get; set; }
         public virtual DbSet<Author> Authors { get; set; }
-    
+        
         public virtual DbSet<BookAuthor> BookAuthors { get; set; }
-    
         public virtual DbSet<PublishingCodeType> PublishingCodeTypes { get; set; }
         
         public virtual DbSet<ВоокBorrower> ВоокBorrowers { get; set; }
-
     
         protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
             => optionsBuilder.UseSqlServer("Server=localhost;Database=Library;Trusted_Connection=True;Integrated Security=True;Encrypt=True;Trust Server Certificate=True");
